@@ -21,6 +21,7 @@ class Command(BaseCommand):
 def genRandUser():
     newUser = cm.user(name=names.get_full_name())
     newUser.save()
+    cm.output(user=newUser,name='bank, or paypal, or something').save()
     print("{} - user added".format(newUser.name))
 
 def genRandChannel():
