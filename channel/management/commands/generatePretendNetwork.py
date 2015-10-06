@@ -13,7 +13,13 @@ class Command(BaseCommand):
         parser.add_argument('iterations', type=int)
 
     def handle(self, *args, **kwargs):
-        doables = [genRandUser,genRandChannel]
+        ## These are functions below that modify the
+        ## network in some way. Hopefully self explanitory.
+        doables = [genRandUser,
+                   genRandChannel,
+                   genRandDestination,
+                   genRandSource,
+                   ]
         for i in range(0,kwargs['iterations']):
             print(i)
             randomChoice(doables)()
@@ -21,7 +27,6 @@ class Command(BaseCommand):
 def genRandUser():
     newUser = cm.user(name=names.get_full_name())
     newUser.save()
-    cm.output(user=newUser,name='bank, or paypal, or something').save()
     print("{} - user added".format(newUser.name))
 
 def genRandChannel():
@@ -32,3 +37,19 @@ def genRandChannel():
     newChannel = cm.channel(name=prospectiveName)
     newChannel.save()
     print("{} - channel added.".format(newChannel.name))
+
+pretendAccountTypes = ['masterfoo','visabar','royal quux bank']
+def genRandSource():
+    users = cm.user.objects.all()
+    if users:
+        randomUser = randomChoice(users)
+        randomPretendAccountType = randomChoice(pretendAccountTypes)
+        randomUser.addGivingAccount(randomPretendAccountType)
+        print("{} - source added".format(randomUser.source_set.last()))
+def genRandDestination():
+    users = cm.user.objects.all()
+    if users:
+        randomUser = randomChoice(users)
+        randomPretendAccountType = randomChoice(pretendAccountTypes)
+        randomUser.addRecievingAccount(randomPretendAccountType)
+        print("{} - destination added".format(randomUser.destination_set.last()))
